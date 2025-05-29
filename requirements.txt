@@ -1,0 +1,5 @@
+python-dotenv
+nltk
+pandas
+requests
+python-Levenshtein
