@@ -31,9 +31,6 @@ wheels/
 *.xlsx
 *.xls
 
-# Output files
-llm_detection_results.csv
-
 # Logs
 *.log
 logs/
