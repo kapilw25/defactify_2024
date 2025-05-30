@@ -27,9 +27,9 @@ wheels/
 *.egg
 
 # Data files
-*.json
-*.xlsx
-*.xls
+# *.json
+# *.xlsx
+# *.xls
 
 # Logs
 *.log
