@@ -23,10 +23,10 @@ from baseline_benchmark_3 import detect_text, Score
 INPUT_FILE = 'dataset/updated_test_data.csv'
 OUTPUT_FILE = 'results/baseline_benchmark_33_results.csv'
 CHECKPOINT_FILE = 'checkpoint/checkpoint.pkl'  # Using existing checkpoint path
-BATCH_SIZE = 3
+BATCH_SIZE = 5
 DB_FILE = 'results/benchmark_results.db'
-CSV_EXPORT_FREQUENCY = 3  # Export to CSV after every 3 batches
-MAX_WORKERS = 4  # Number of parallel workers (adjust based on your 8-core M1)
+CSV_EXPORT_FREQUENCY = 5  # Export to CSV after every 3 batches
+MAX_WORKERS = 6  # Number of parallel workers (adjust based on your 8-core M1)
 
 # Thread-safe lock for database operations
 db_lock = threading.Lock()
