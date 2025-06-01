@@ -1,7 +1,0 @@
-sentence_number,original_text,best_model,edit_distance,regenerated_text
-1.1,This is a sample human-written text for testing.,meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo,0,This is a sample human-written text for testing.
-1.2,It contains multiple sentences.,meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo,2,TEXT = It contains multiple sentences.
-1.3,The algorithm should process each sentence separately.,mistralai/Mistral-7B-Instruct-v0.1,3, The algorithm must handle each sentence independently.
-2.1,AI models like GPT can generate coherent text that mimics human writing.,Yi-Large,10,"AI models, such as GPT, are capable of producing coherent text that closely resembles human writing."
-2.2,These models are trained on vast amounts of data.,meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo,0,These models are trained on vast amounts of data.
-2.3,They learn patterns in language.,meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo,0,They learn patterns in language.

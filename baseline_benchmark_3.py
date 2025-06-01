@@ -30,7 +30,6 @@ nltk.download('punkt_tab')
 # Define models to test
 together_ai_models = [
     "Qwen/Qwen2-72B-Instruct",
-    # "google/gemma-2-9b-it",
     "mistralai/Mistral-7B-Instruct-v0.1",
     "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 ]
@@ -43,6 +42,7 @@ class Score:
         self.edit_score = edit_score
         self.new_text = new_text
         self.model = model
+        self.text_index = None  # Will be set when processing dataset
 
 def togetherai(question, model, api_key=together_apikey):
     """
@@ -193,48 +193,87 @@ def detect_text(text):
         
     return edit_distance_score
 
-def save_to_csv(data, original_text, filename='output.csv'):
+def save_to_csv(data, original_data, filename='output.csv'):
     """
     Save results to CSV file with model comparisons
+    This function handles both single text and dataset cases
     """
-    # Group data by model
-    models_data = defaultdict(list)
-    for item in data:
-        models_data[item.model].append(item)
-
-    # Create rows with model data in separate columns
     rows = []
-    max_entries = max([len(entries) for entries in models_data.values()])
     
-    for i in range(max_entries):
-        row = {'index': i, 'Text': original_text}
-        
-        # Track the best model (lowest edit score) for this row
-        best_model = None
-        lowest_edit_score = float('inf')
-        
-        # Add each model's data in separate columns
-        for model_name, items in models_data.items():
-            if i < len(items):
-                edit_score = items[i].edit_score
-                row[f'{model_name}_Edit_Score'] = items[i].edit_score
-                row[f'{model_name}_New_Text'] = items[i].new_text
-                
-                # Check if this model has the lowest edit score so far
-                if edit_score < lowest_edit_score:
-                    lowest_edit_score = edit_score
-                    best_model = model_name
+    # Check if we're dealing with dataset results or single text
+    if isinstance(original_data, pd.DataFrame):
+        # Dataset case - group by text index and model
+        text_model_data = defaultdict(lambda: defaultdict(list))
+        for item in data:
+            text_model_data[item.text_index][item.model].append(item)
             
-            else:
-                # Fill with empty values if this model has fewer entries
-                row[f'{model_name}_Edit_Score'] = None
-                row[f'{model_name}_Regenerated_Text'] = None
+        for text_idx, models_data in text_model_data.items():
+            # Get the original text from the dataframe
+            original_text = original_data[original_data['index'] == text_idx]['Text'].values[0]
+            
+            row = {'index': text_idx, 'Text': original_text}
+            
+            # Track the best model (lowest edit score) for this row
+            best_model = None
+            lowest_edit_score = float('inf')
+            
+            # Add each model's data in separate columns
+            for model_name, items in models_data.items():
+                if items:  # If we have results for this model
+                    edit_score = items[0].edit_score
+                    row[f'{model_name}_Edit_Score'] = edit_score
+                    row[f'{model_name}_New_Text'] = items[0].new_text
+                    
+                    # Check if this model has the lowest edit score so far
+                    if edit_score < lowest_edit_score:
+                        lowest_edit_score = edit_score
+                        best_model = model_name
+                else:
+                    # Fill with empty values if no results for this model
+                    row[f'{model_name}_Edit_Score'] = None
+                    row[f'{model_name}_New_Text'] = None
+            
+            # Add the best model column
+            row['best_LLM_model'] = best_model
+            rows.append(row)
+    else:
+        # Single text case - group by model
+        original_text = original_data
+        models_data = defaultdict(list)
+        for item in data:
+            models_data[item.model].append(item)
+
+        max_entries = max([len(entries) for entries in models_data.values()])
         
-        # Add the best model column
-        row['best_LLM_model'] = best_model
-        rows.append(row)
+        for i in range(max_entries):
+            row = {'index': i, 'Text': original_text}
+            
+            # Track the best model (lowest edit score) for this row
+            best_model = None
+            lowest_edit_score = float('inf')
+            
+            # Add each model's data in separate columns
+            for model_name, items in models_data.items():
+                if i < len(items):
+                    edit_score = items[i].edit_score
+                    row[f'{model_name}_Edit_Score'] = items[i].edit_score
+                    row[f'{model_name}_New_Text'] = items[i].new_text
+                    
+                    # Check if this model has the lowest edit score so far
+                    if edit_score < lowest_edit_score:
+                        lowest_edit_score = edit_score
+                        best_model = model_name
+                else:
+                    # Fill with empty values if this model has fewer entries
+                    row[f'{model_name}_Edit_Score'] = None
+                    row[f'{model_name}_New_Text'] = None
+            
+            # Add the best model column
+            row['best_LLM_model'] = best_model
+            rows.append(row)
     
     df = pd.DataFrame(rows)
+    
     # Move 'best_LLM_model' columns to 3rd position
     cols = df.columns.tolist()
     cols.insert(2, cols.pop(cols.index('best_LLM_model')))
@@ -255,19 +294,33 @@ def main():
     """
     Main function to run the benchmark
     """
-    # Sample text for testing
-    text = """
-    Global Economy Global Economy Supported by World Bank Sees Rosier Growth Outlook But rising trade barriers pose a long-term threat to global output as protectionist policies spread, the bank said. ByAlan Rappeport Reporting from Washington The World Bank on Tuesday raised its outlook for the world economy this year but warned that the rise of new trade barriers and protectionist policies posed a long-term threat to global growth. In its latest Global Economic Prospects report, the World Bank projected global growth to hold steady at 2.6 percent this year, an upgrade from itsJanuary forecastof 2.4 percent, and predicted that output would edge higher to 2.7 percent in 2025. The forecasts showed the global economy stabilizing after being rocked in recent years by the pandemic and the wars in Ukraine and the Middle East. "Four years after the upheavals caused by the pandemic, conflicts, inflation and monetary tightening, it appears that global economic growth is steadying," Indermit Gill, the World Bank's chief economist, said in a statement accompanying the report. However, sluggish growth continues to haunt the world's poorest economies, which are still grappling with inflation and the burdens of high debt. The bank noted that over the next three years, countries that account for more than 80 percent of the world's population would experience slower growth than in the decade before the pandemic. The slightly brighter forecast was led by the resilience of the U.S. economy, which continues to defy expectations despite higher interest rates. Overall, advanced economies are growing at an annual rate of 1.5 percent, with output remaining sluggish in Europe and Japan. By contrast, emerging market and developing economies are growing at a rate of 4 percent, led by China and Indonesia. Although growth is expected to be a bit stronger than previously forecast, the World Bank said prices were easing more slowly than it projected six months ago. It foresees global inflation moderating to 3.5 percent in 2024 and 2.9 percent next year. That gradual decline is likely to lead central banks to delay interest rate cuts, dimming prospects for growth in developing economies.
-    """
+    # Load dataset from CSV
+    print("Loading dataset from CSV...")
+    df = pd.read_csv('dataset/updated_test_data.csv')
     
-    print("Starting text regeneration benchmark...")
-    print(f"Processing text with {len(together_ai_models) + 2} models")  # +2 for Yi-Large and Gemma
+    # Take only the first 5 rows for testing
+    test_df = df.head(5)
+    print(f"Processing {len(test_df)} texts from dataset")
     
-    # Run the benchmark
-    data = detect_text(text)
+    all_results = []
     
-    # Save results to CSV
-    save_to_csv(data, text, 'baseline_benchmark_3_2_results.csv')
+    # Process each text in the dataset
+    for index, row in test_df.iterrows():
+        text = row['Text']
+        print(f"\nProcessing text {index+1} of {len(test_df)}...")
+        
+        # Run the benchmark for this text
+        data = detect_text(text)
+        
+        # Add results to the collection
+        for item in data:
+            item.text_index = row['index']  # Store original index from dataset
+        all_results.extend(data)
+    
+    # Save all results to CSV
+    save_to_csv(all_results, test_df, 'results/baseline_benchmark_33_results.csv')
+    
+    print("Benchmark completed!")
 
 if __name__ == "__main__":
     main()
