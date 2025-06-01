@@ -14,6 +14,7 @@ import Levenshtein
 from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize
 from collections import defaultdict
+from huggingface_hub import InferenceClient
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,6 +34,9 @@ together_ai_models = [
     "mistralai/Mistral-7B-Instruct-v0.1",
     "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 ]
+
+# Define Gemma model
+gemma_model = "google/gemma-3-27b-it"
 
 class Score:
     def __init__(self, edit_score, new_text, model):
@@ -106,6 +110,39 @@ def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models
         print(f"Error: {response.status_code}, {response.text}")
         return None
 
+def gemma(question, api_key=hf_api_key, model="google/gemma-3-27b-it"):
+    """
+    Call Gemma model via Hugging Face Inference API to regenerate text
+    """
+    try:
+        client = InferenceClient(
+            provider="nebius",
+            api_key=api_key,
+        )
+        
+        formatted_prompt = f"Regenerate provided text: TEXT = {question}"
+        
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": formatted_prompt
+                }
+            ],
+            temperature=0.5,
+            top_p=1,
+            stream=False,
+        )
+        
+        # Extract the output message
+        output_message = response.choices[0].message.content
+        return output_message
+        
+    except Exception as e:
+        print(f"Error with Gemma model: {e}")
+        return None
+
 def get_edit_distance(text1, text2):
     """
     Calculate Levenshtein edit distance between two texts
@@ -143,6 +180,16 @@ def detect_text(text):
         print(f"  Edit distance: {edit_score}")
     else:
         print("  Failed to get response from Yi-Large")
+    
+    # Process with Gemma model
+    print("Processing with Gemma...")
+    new_text = gemma(text)
+    if new_text:
+        edit_score = get_edit_distance(text, new_text)
+        edit_distance_score.append(Score(edit_score, new_text, "Gemma-3-27b"))
+        print(f"  Edit distance: {edit_score}")
+    else:
+        print("  Failed to get response from Gemma")
         
     return edit_distance_score
 
@@ -160,7 +207,7 @@ def save_to_csv(data, original_text, filename='output.csv'):
     max_entries = max([len(entries) for entries in models_data.values()])
     
     for i in range(max_entries):
-        row = {'Sr. No': i + 1, 'Original Text': original_text}
+        row = {'index': i, 'Text': original_text}
         
         # Track the best model (lowest edit score) for this row
         best_model = None
@@ -214,13 +261,13 @@ def main():
     """
     
     print("Starting text regeneration benchmark...")
-    print(f"Processing text with {len(together_ai_models) + 1} models")
+    print(f"Processing text with {len(together_ai_models) + 2} models")  # +2 for Yi-Large and Gemma
     
     # Run the benchmark
     data = detect_text(text)
     
     # Save results to CSV
-    save_to_csv(data, text, 'baseline_benchmark_3_results.csv')
+    save_to_csv(data, text, 'baseline_benchmark_3_2_results.csv')
 
 if __name__ == "__main__":
     main()
