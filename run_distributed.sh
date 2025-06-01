@@ -2,7 +2,7 @@
 
 # Define variables
 LOCAL_DIR="/Users/kapilwanaskar/Downloads/defactify_2024"
-SCRIPT_NAME="text_baseline_4_full.py"
+SCRIPT_NAME="text_baseline_4_parallel_N_distributed.py"
 DATA_NAME="updated_test_data.csv"
 ENV_NAME=".env"
 REMOTE_DIR="~/defactify_2024"

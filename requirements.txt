@@ -1,5 +1,8 @@
-python-dotenv
+backoff
+huggingface_hub
 nltk
 pandas
-requests
+python-dotenv
 python-Levenshtein
+requests
+tqdm

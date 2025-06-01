@@ -24,6 +24,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 from tqdm import tqdm
 import backoff
+from huggingface_hub import InferenceClient
+from huggingface_hub.inference._client import ChatCompletionOutput
 
 # Configure argument parser for distributed processing
 parser = argparse.ArgumentParser(description='Process text data with LLM detection')
@@ -53,11 +55,26 @@ load_dotenv()
 # Get API keys from environment variables
 together_apikey = os.environ.get('TOGETHER_API_KEY')
 firework_apikey = os.environ.get('FIREWORK_API_KEY')
+hf_api_key = os.environ.get('HF_API_KEY')
 
 # Check if API keys are available
 if not together_apikey:
     logger.error("TOGETHER_API_KEY not found in environment variables")
     sys.exit(1)
+       
+# Initialize Hugging Face client for Gemma model
+hf_client = None
+if hf_api_key:
+    try:
+        hf_client = InferenceClient(
+            provider="nebius",
+            api_key=hf_api_key,
+        )
+        logger.info("Hugging Face client initialized for Gemma model")
+    except Exception as e:
+        logger.error(f"Failed to initialize Hugging Face client: {str(e)}")
+else:
+    logger.warning("HF_API_KEY not found in environment variables, Gemma model will be skipped")
 
 # Define models
 together_ai_models = [
@@ -66,13 +83,13 @@ together_ai_models = [
     "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 ]
 
-# Define all models including Fireworks
-all_models = together_ai_models + ["Yi-Large"]
+# Define all models including Fireworks and Hugging Face
+all_models = together_ai_models + ["Yi-Large", "google/gemma-3-27b-it"]
 
 # Define input and output file paths
-INPUT_FILE = "updated_test_data.csv"  # The full dataset
-OUTPUT_FILE = f"llm_detection_results_full_chunk{args.chunk}.csv"  # Output file for this chunk
-CHECKPOINT_FILE = f"processing_checkpoint_chunk{args.chunk}.json"  # To save progress
+INPUT_FILE = "dataset/updated_test_data.csv"  # The full dataset
+OUTPUT_FILE = f"results/llm_detection_results_full_chunk{args.chunk}.csv"  # Output file for this chunk
+CHECKPOINT_FILE = f"checkpoint/processing_checkpoint_chunk{args.chunk}.json"  # To save progress
 BATCH_SIZE = args.batch_size  # Process this many texts before saving a checkpoint
 
 # Rate limiting setup
@@ -110,6 +127,7 @@ class RateLimiter:
 # Create rate limiters for each API
 together_rate_limiter = RateLimiter(API_CALLS_PER_MINUTE)
 fireworks_rate_limiter = RateLimiter(API_CALLS_PER_MINUTE)
+huggingface_rate_limiter = RateLimiter(API_CALLS_PER_MINUTE)
 
 # Exponential backoff decorator for API calls
 @backoff.on_exception(
@@ -190,6 +208,59 @@ def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models
         logger.error(f"Fireworks API call failed: {str(e)}")
         return None
 
+def huggingface_gemma(question, client=hf_client):
+    """Make API call to Hugging Face for Gemma model with rate limiting"""
+    if not client:
+        logger.warning("Hugging Face client not available, skipping Gemma model")
+        return None
+        
+    logger.debug("Making Hugging Face API call with model: google/gemma-3-27b-it")
+    formatted_prompt = f"Regenerate the text: TEXT={question}\n"
+    
+    try:
+        # Apply rate limiting
+        huggingface_rate_limiter.wait_if_needed()
+        
+        start_time = time.time()
+        
+        # Use backoff decorator for retries
+        @backoff.on_exception(
+            backoff.expo,
+            Exception,
+            max_tries=5,
+            max_time=300
+        )
+        def make_hf_request():
+            response = client.chat.completions.create(
+                model="google/gemma-3-27b-it",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": formatted_prompt
+                    }
+                ],
+                temperature=0.3,
+            )
+            return response
+            
+        response = make_hf_request()
+        elapsed_time = time.time() - start_time
+        logger.debug(f"API call completed in {elapsed_time:.2f} seconds")
+        
+        if isinstance(response, ChatCompletionOutput):
+            return response.choices[0].message.content
+        else:
+            # Handle streaming response if needed
+            content = ""
+            for chunk in response:
+                if chunk.choices[0].delta.content is not None:
+                    content += chunk.choices[0].delta.content
+            return content
+            
+    except Exception as e:
+        logger.error(f"Hugging Face API call failed for Gemma model: {str(e)}")
+        return None
+
 def get_edit_distance(text1, text2):
     """
     Simple edit distance calculation without NLTK tokenization
@@ -259,6 +330,21 @@ def detect_text(sentence):
                 logger.debug(f"Model Yi-Large edit distance: {edit_score_fw}")
         except Exception as e:
             logger.error(f"Error processing with Fireworks: {str(e)}")
+            
+    # Process using the Hugging Face Gemma model
+    if hf_client:
+        logger.debug("Processing with Hugging Face Gemma model")
+        try:
+            new_text_hf = huggingface_gemma(sentence)
+            if new_text_hf:
+                edit_score_hf = get_edit_distance(sentence, new_text_hf)
+                results["google/gemma-3-27b-it"] = {
+                    'edit_distance': edit_score_hf,
+                    'regenerated_text': new_text_hf
+                }
+                logger.debug(f"Model google/gemma-3-27b-it edit distance: {edit_score_hf}")
+        except Exception as e:
+            logger.error(f"Error processing with Hugging Face Gemma: {str(e)}")
 
     return results
 
@@ -314,34 +400,7 @@ def save_checkpoint(processed_texts, output_data):
     
     # Also save current results
     if output_data:
-        # Convert the nested dictionary structure to a flat dataframe
-        flat_data = []
-        for item in output_data:
-            text_id = item['text_id']
-            sentence_number = item['sentence_number']
-            original_text = item['original_text']
-            
-            # Find the best model (lowest edit distance)
-            best_model = None
-            best_score = float('inf')
-            for model, data in item['model_results'].items():
-                if data['edit_distance'] < best_score:
-                    best_score = data['edit_distance']
-                    best_model = model
-            
-            # Add a row for each model
-            for model, data in item['model_results'].items():
-                flat_data.append({
-                    'text_id': text_id,
-                    'sentence_number': sentence_number,
-                    'original_text': original_text,
-                    'model': model,
-                    'edit_distance': data['edit_distance'],
-                    'regenerated_text': data['regenerated_text'],
-                    'is_best_model': model == best_model
-                })
-        
-        temp_df = pd.DataFrame(flat_data)
+        temp_df = pd.DataFrame(output_data)
         temp_df.to_csv(f"{OUTPUT_FILE}.temp", index=False)
         logger.info(f"Checkpoint saved: {processed_texts} texts processed")
 
@@ -359,52 +418,45 @@ def load_checkpoint():
 
 def process_text(text_info):
     """Process a single text with all its sentences"""
-    text_idx, text = text_info
+    text_idx, text_id, text = text_info
     logger.info(f"Processing text {text_idx+1}: {text[:50]}...")
-    text_results = []
+    
+    # Initialize results for this text
+    text_results = {
+        'text_id': text_id,
+        'original_text': text,
+        'best_model': None,
+        'best_edit_distance': float('inf')
+    }
+    
+    # Initialize model results
+    for model in all_models:
+        text_results[f"{model}_edit_distance"] = None
+        text_results[f"{model}_regenerated_text"] = None
     
     try:
-        # Try to split into sentences
-        sentences = split_into_sentences(text)
-        
-        if not sentences:
-            # If no sentences were found, use simple period splitting
-            sentences = [s.strip() + '.' for s in text.split('.') if s.strip()]
-            
-        if sentences:
-            logger.info(f"Split text {text_idx+1} into {len(sentences)} sentences")
-            
-            for sent_idx, sentence in enumerate(sentences):
-                logger.info(f"Processing Sentence {text_idx+1}.{sent_idx+1}: {sentence[:50]}...")
-                try:
-                    model_results = detect_text(sentence)
-                    if model_results:
-                        text_results.append({
-                            'text_id': text_idx + 1,
-                            'sentence_number': f"{text_idx+1}.{sent_idx+1}",
-                            'original_text': sentence,
-                            'model_results': model_results
-                        })
-                    else:
-                        logger.warning(f"No valid results for sentence {text_idx+1}.{sent_idx+1}")
-                except Exception as e:
-                    logger.error(f"Error processing sentence {text_idx+1}.{sent_idx+1}: {str(e)}", exc_info=True)
-        else:
-            # If no sentences were found, process the whole text
-            logger.info(f"No sentences found, processing text {text_idx+1} as a single unit")
-            try:
-                model_results = detect_text(text)
-                if model_results:
-                    text_results.append({
-                        'text_id': text_idx + 1,
-                        'sentence_number': f"{text_idx+1}.1",
-                        'original_text': text,
-                        'model_results': model_results
-                    })
-                else:
-                    logger.warning(f"No valid results for text {text_idx+1}")
-            except Exception as e:
-                logger.error(f"Error processing text {text_idx+1}: {str(e)}", exc_info=True)
+        # Process the whole text directly without splitting into sentences
+        logger.info(f"Processing text {text_idx+1} as a single unit")
+        try:
+            model_results = detect_text(text)
+            if model_results:
+                # Find the best model (lowest edit distance)
+                for model, data in model_results.items():
+                    edit_distance = data['edit_distance']
+                    regenerated_text = data['regenerated_text']
+                    
+                    # Store results for this model
+                    text_results[f"{model}_edit_distance"] = edit_distance
+                    text_results[f"{model}_regenerated_text"] = regenerated_text
+                    
+                    # Update best model if this one is better
+                    if edit_distance < text_results['best_edit_distance']:
+                        text_results['best_model'] = model
+                        text_results['best_edit_distance'] = edit_distance
+            else:
+                logger.warning(f"No valid results for text {text_idx+1}")
+        except Exception as e:
+            logger.error(f"Error processing text {text_idx+1}: {str(e)}", exc_info=True)
     except Exception as e:
         logger.error(f"Error processing text {text_idx+1}: {str(e)}", exc_info=True)
     
@@ -417,7 +469,15 @@ def main():
     try:
         logger.info(f"Loading data from {INPUT_FILE}")
         df = pd.read_csv(INPUT_FILE)
+        
+        # TEMPORARY MODIFICATION: Only process first 5 rows for testing
+        logger.info("TESTING MODE: Only processing first 5 rows")
+        df = df.head(5)
+        
+        # Keep the original index for output
+        df_with_index = df.reset_index()
         all_texts = df["Text"].astype(str).tolist()
+        all_indices = df_with_index["index"].tolist()
         logger.info(f"Loaded {len(all_texts)} texts")
         
         # Calculate chunk boundaries if distributed processing is enabled
@@ -426,9 +486,11 @@ def main():
             start_idx = args.chunk * chunk_size
             end_idx = min((args.chunk + 1) * chunk_size, len(all_texts))
             texts = all_texts[start_idx:end_idx]
+            indices = all_indices[start_idx:end_idx]
             logger.info(f"Processing chunk {args.chunk}/{args.total_chunks}: texts {start_idx} to {end_idx-1} ({len(texts)} texts)")
         else:
             texts = all_texts
+            indices = all_indices
             
     except FileNotFoundError:
         logger.error(f"Error: Input file '{INPUT_FILE}' not found. Please check the file path.")
@@ -478,7 +540,7 @@ def main():
             logger.error(f"Error loading temp results: {str(e)}")
     
     # Create a list of texts to process
-    texts_to_process = [(i, texts[i]) for i in range(checkpoint_start_idx, len(texts))]
+    texts_to_process = [(i, indices[i], texts[i]) for i in range(checkpoint_start_idx, len(texts))]
     
     # Process texts in parallel
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
@@ -493,9 +555,9 @@ def main():
                 text_idx = text_info[0]
                 
                 try:
-                    text_results = future.result()
-                    if text_results:
-                        output_data.extend(text_results)
+                    text_result = future.result()
+                    if text_result:
+                        output_data.append(text_result)
                     
                     completed += 1
                     pbar.update(1)
@@ -511,34 +573,7 @@ def main():
     if output_data:
         logger.info(f"Saving results to {OUTPUT_FILE}")
         
-        # Convert the nested dictionary structure to a flat dataframe
-        flat_data = []
-        for item in output_data:
-            text_id = item['text_id']
-            sentence_number = item['sentence_number']
-            original_text = item['original_text']
-            
-            # Find the best model (lowest edit distance)
-            best_model = None
-            best_score = float('inf')
-            for model, data in item['model_results'].items():
-                if data['edit_distance'] < best_score:
-                    best_score = data['edit_distance']
-                    best_model = model
-            
-            # Add a row for each model
-            for model, data in item['model_results'].items():
-                flat_data.append({
-                    'text_id': text_id,
-                    'sentence_number': sentence_number,
-                    'original_text': original_text,
-                    'model': model,
-                    'edit_distance': data['edit_distance'],
-                    'regenerated_text': data['regenerated_text'],
-                    'is_best_model': model == best_model
-                })
-        
-        results_df = pd.DataFrame(flat_data)
+        results_df = pd.DataFrame(output_data)
         results_df.to_csv(OUTPUT_FILE, index=False)
         logger.info(f"Results saved to {OUTPUT_FILE}")
         print(f"Results successfully saved to {OUTPUT_FILE}")
