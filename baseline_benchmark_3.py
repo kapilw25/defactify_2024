@@ -19,6 +19,8 @@ from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize
 from collections import defaultdict
 from huggingface_hub import InferenceClient
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # Load environment variables from .env file
 load_dotenv()
@@ -48,9 +50,18 @@ class Score:
         self.model = model
         self.text_index = None  # Will be set when processing dataset
 
-def togetherai(question, model, api_key=together_apikey):
+def togetherai(question, model, api_key=together_apikey, session=None):
     """
     Call Together AI API to regenerate text using specified model
+    
+    Args:
+        question (str): The text to regenerate
+        model (str): Model to use
+        api_key (str): API key for Together.ai
+        session (requests.Session, optional): Session for connection pooling
+        
+    Returns:
+        str: Regenerated text
     """
     url = "https://api.together.xyz/v1/chat/completions"
     formatted_prompt = f"Regenerate provided text: TEXT = {question}"
@@ -71,7 +82,11 @@ def togetherai(question, model, api_key=together_apikey):
         "Authorization": f"Bearer {api_key}"
     }
 
-    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    # Use the provided session if available, otherwise use requests directly
+    if session:
+        response = session.post(url, headers=headers, json=payload)
+    else:
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
 
     if response.status_code == 200:
         # Extract the output message
@@ -81,7 +96,7 @@ def togetherai(question, model, api_key=together_apikey):
         print(f"Error: {response.status_code}, {response.text}")
         return None
 
-def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models/yi-large"):
+def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models/yi-large", session=None):
     """
     Call Fireworks AI API to regenerate text using specified model
     """
@@ -104,7 +119,11 @@ def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models
         "Authorization": f"Bearer {api_key}"
     }
 
-    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    # Use the provided session if available, otherwise use requests directly
+    if session:
+        response = session.post(url, headers=headers, json=payload)
+    else:
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
 
     if response.status_code == 200:
         # Extract the output message
@@ -114,7 +133,7 @@ def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models
         print(f"Error: {response.status_code}, {response.text}")
         return None
 
-def gemma(question, api_key=hf_api_key, model="google/gemma-3-27b-it"):
+def gemma(question, api_key=hf_api_key, model="google/gemma-3-27b-it", session=None):
     """
     Call Gemma model via Hugging Face Inference API to regenerate text
     """
@@ -158,16 +177,23 @@ def get_edit_distance(text1, text2):
     distance = Levenshtein.distance(joined1, joined2)
     return distance
 
-def detect_text(text):
+def detect_text(text, session=None):
     """
     Process text through multiple models and calculate edit distances
+    
+    Args:
+        text (str): The text to analyze
+        session (requests.Session, optional): Session for connection pooling
+    
+    Returns:
+        list: List of Score objects with results from each model
     """
     edit_distance_score = []
     
     # Process with Together AI models
     for model in together_ai_models:
         print(f"Processing with {model}...")
-        new_text = togetherai(text, model)
+        new_text = togetherai(text, model, session=session)
         if new_text:
             edit_score = get_edit_distance(text, new_text)
             edit_distance_score.append(Score(edit_score, new_text, model))
@@ -177,7 +203,7 @@ def detect_text(text):
     
     # Process with Fireworks AI
     print("Processing with Yi-Large...")
-    new_text = fireworks(text)
+    new_text = fireworks(text, session=session)
     if new_text:
         edit_score = get_edit_distance(text, new_text)
         edit_distance_score.append(Score(edit_score, new_text, "Yi-Large"))
@@ -187,7 +213,7 @@ def detect_text(text):
     
     # Process with Gemma model
     print("Processing with Gemma...")
-    new_text = gemma(text)
+    new_text = gemma(text, session=session)
     if new_text:
         edit_score = get_edit_distance(text, new_text)
         edit_distance_score.append(Score(edit_score, new_text, "Gemma-3-27b"))

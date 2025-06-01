@@ -6,8 +6,12 @@ import time
 import sqlite3
 import concurrent.futures
 import threading
+import requests
 from tqdm import tqdm
 from collections import defaultdict
+from functools import lru_cache
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # Import functions from baseline_benchmark_3.py
 from baseline_benchmark_3 import detect_text, Score
@@ -21,10 +25,17 @@ machine_id = sys.argv[3]
 INPUT_FILE = 'dataset/updated_test_data.csv'
 OUTPUT_FILE = f'results/baseline_benchmark_33_results_{machine_id}.csv'
 CHECKPOINT_FILE = f'checkpoint/checkpoint_{machine_id}.pkl'
-BATCH_SIZE = 5
+BATCH_SIZE = 10  # Increased from 5 to 10
 DB_FILE = f'results/benchmark_results_{machine_id}.db'
-CSV_EXPORT_FREQUENCY = 5  # Export to CSV after every 5 batches
-MAX_WORKERS = 6  # Number of parallel workers
+CSV_EXPORT_FREQUENCY = 10  # Reduced checkpoint frequency from 5 to 10 batches
+MAX_WORKERS = 6  # MAX_WORKERS =6 if 8-core M1 machine, 
+# MAX_WORKERS =12 # if 8 gb Nvidia GPU
+
+# Setup connection pooling for API calls
+session = requests.Session()
+retries = Retry(total=5, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+session.mount('http://', HTTPAdapter(pool_connections=MAX_WORKERS, pool_maxsize=MAX_WORKERS*2, max_retries=retries))
+session.mount('https://', HTTPAdapter(pool_connections=MAX_WORKERS, pool_maxsize=MAX_WORKERS*2, max_retries=retries))
 
 # Thread-safe locks
 db_lock = threading.Lock()
@@ -114,7 +125,10 @@ def save_to_sqlite(data, original_data):
             text_model_data = defaultdict(lambda: defaultdict(list))
             for item in data:
                 text_model_data[item.text_index][item.model].append(item)
-                
+            
+            # Batch insert data
+            batch_data = []
+            
             for text_idx, models_data in text_model_data.items():
                 # Get the original text from the dataframe
                 original_text = original_data[original_data['index'] == text_idx]['Text'].values[0]
@@ -130,14 +144,21 @@ def save_to_sqlite(data, original_data):
                             lowest_edit_score = edit_score
                             best_model = model_name
                 
-                # Insert data for each model
+                # Prepare data for each model
                 for model_name, items in models_data.items():
                     if items:  # If we have results for this model
                         is_best = 1 if model_name == best_model else 0
-                        cursor.execute(
-                            "INSERT INTO results (text_index, original_text, model, edit_score, new_text, best_model, machine_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                            (text_idx, original_text, model_name, items[0].edit_score, items[0].new_text, is_best, machine_id)
-                        )
+                        batch_data.append((
+                            text_idx, original_text, model_name, items[0].edit_score, 
+                            items[0].new_text, is_best, machine_id
+                        ))
+            
+            # Execute batch insert
+            if batch_data:
+                cursor.executemany(
+                    "INSERT INTO results (text_index, original_text, model, edit_score, new_text, best_model, machine_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    batch_data
+                )
         
         # Commit changes and close connection
         conn.commit()
@@ -226,7 +247,7 @@ def process_text(text_row, processed_indices):
     
     try:
         # Run the benchmark for this text
-        data = detect_text(text)
+        data = detect_text(text, session=session)  # Pass the session for connection pooling
         
         # Add text_index to each item
         for item in data:
@@ -247,13 +268,18 @@ def process_batch_parallel(batch_df, processed_indices, shared_processed_indices
     # Create a copy of the dataframe for this thread
     batch_df_copy = batch_df.copy()
     
+    # Filter out already processed texts
+    unprocessed_rows = [row for _, row in batch_df_copy.iterrows() if row['index'] not in processed_indices]
+    
+    if not unprocessed_rows:
+        return [], []
+    
     # Use ThreadPoolExecutor for parallel processing
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         # Submit tasks for each text in the batch
         future_to_idx = {
             executor.submit(process_text, row, processed_indices): row['index']
-            for _, row in batch_df_copy.iterrows()
-            if row['index'] not in processed_indices
+            for row in unprocessed_rows
         }
         
         # Process results as they complete
