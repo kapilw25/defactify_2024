@@ -58,7 +58,7 @@ def togetherai(question, model, api_key=together_apikey):
         "top_k": 40,
         "presence_penalty": 0,
         "frequency_penalty": 0,
-        "temperature": 0.5,
+        "temperature": 0.05,
     }
 
     headers = {
@@ -91,7 +91,7 @@ def fireworks(question, api_key=firework_apikey, model="accounts/yi-01-ai/models
         "top_k": 40,
         "presence_penalty": 0,
         "frequency_penalty": 0,
-        "temperature": 0.5,
+        "temperature": 0.05,
     }
 
     headers = {
@@ -130,7 +130,7 @@ def gemma(question, api_key=hf_api_key, model="google/gemma-3-27b-it"):
                     "content": formatted_prompt
                 }
             ],
-            temperature=0.5,
+            temperature=0.05,
             top_p=1,
             stream=False,
         )
@@ -294,9 +294,13 @@ def main():
     """
     Main function to run the benchmark
     """
+    # Define input and output file paths
+    INPUT_FILE = 'dataset/updated_test_data.csv'
+    OUTPUT_FILE = 'results/baseline_benchmark_34_results.csv'
+    
     # Load dataset from CSV
-    print("Loading dataset from CSV...")
-    df = pd.read_csv('dataset/updated_test_data.csv')
+    print(f"Loading dataset from {INPUT_FILE}...")
+    df = pd.read_csv(INPUT_FILE)
     
     # Take only the first 5 rows for testing
     test_df = df.head(5)
@@ -318,7 +322,7 @@ def main():
         all_results.extend(data)
     
     # Save all results to CSV
-    save_to_csv(all_results, test_df, 'results/baseline_benchmark_33_results.csv')
+    save_to_csv(all_results, test_df, OUTPUT_FILE)
     
     print("Benchmark completed!")
 
