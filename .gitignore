@@ -29,7 +29,7 @@ wheels/
 # Data files
 # *.json
 # *.xlsx
-# *.xls
+*.db
 
 # Logs
 *.log
