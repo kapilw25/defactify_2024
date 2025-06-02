@@ -29,6 +29,7 @@ wheels/
 # Data files
 # *.json
 # *.xlsx
+*.db
 results/benchmark_results_gpu1.db
 results/benchmark_results_gpu2.db
 results/benchmark_results_mac.db
