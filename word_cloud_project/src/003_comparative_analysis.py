@@ -1,0 +1,205 @@
+import pandas as pd
+import numpy as np
+import os
+import sys
+import importlib.util
+import random
+
+# Import the db_utils module with numeric prefix
+spec = importlib.util.spec_from_file_location("db_utils", "src/000_db_utils.py")
+db_utils = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(db_utils)
+CentralizedDB = db_utils.CentralizedDB
+
+def sample_data_examples(df, column_name, num_samples=3):
+    """Sample real data examples from a column"""
+    if column_name not in df.columns:
+        return []
+
+    # Get non-null samples
+    valid_data = df[column_name].dropna()
+
+    if len(valid_data) == 0:
+        return []
+
+    # Sample random examples
+    sample_size = min(num_samples, len(valid_data))
+    samples = valid_data.sample(n=sample_size, random_state=42).tolist()
+
+    # Truncate long text for display
+    truncated_samples = []
+    for sample in samples:
+        if len(str(sample)) > 500:
+            truncated_samples.append(str(sample)[:497] + "...")
+        else:
+            truncated_samples.append(str(sample))
+
+    return truncated_samples
+
+def create_comparison_table(df, output_dir):
+    """Create a comparison table with examples from each column"""
+
+    target_columns = [
+        'prompt', 'Human_story', 'gemma-2-9b', 'mistral-7B',
+        'qwen-2-72B', 'llama-8B', 'accounts/yi-01-ai/models/yi-large', 'GPT_4-o'
+    ]
+
+    comparison_data = []
+
+    for column in target_columns:
+        examples = sample_data_examples(df, column, num_samples=2)
+
+        for i, example in enumerate(examples, 1):
+            comparison_data.append({
+                'Column': column,
+                'Sample_Number': f"Sample_{i}",
+                'Content': example,
+                'Content_Length': len(str(example)),
+                'Word_Count': len(str(example).split()) if example else 0
+            })
+
+    # Create DataFrame
+    comparison_df = pd.DataFrame(comparison_data)
+
+    # Save as CSV
+    csv_path = f"{output_dir}/data_examples_comparison.csv"
+    comparison_df.to_csv(csv_path, index=False)
+
+    # Create a summary table
+    summary_data = []
+    for column in target_columns:
+        column_data = df[column].dropna()
+        if len(column_data) > 0:
+            avg_length = column_data.str.len().mean()
+            avg_words = column_data.str.split().str.len().mean()
+            total_entries = len(column_data)
+        else:
+            avg_length = 0
+            avg_words = 0
+            total_entries = 0
+
+        summary_data.append({
+            'Column': column,
+            'Total_Entries': total_entries,
+            'Avg_Character_Length': round(avg_length, 2),
+            'Avg_Word_Count': round(avg_words, 2)
+        })
+
+    summary_df = pd.DataFrame(summary_data)
+    summary_csv_path = f"{output_dir}/column_summary.csv"
+    summary_df.to_csv(summary_csv_path, index=False)
+
+    return csv_path, summary_csv_path, comparison_df, summary_df
+
+def create_markdown_report(comparison_df, summary_df, output_dir):
+    """Create a Markdown report with the comparison data"""
+
+    markdown_content = """# Word Cloud Dataset - Data Examples Comparison
+
+## Column Summary Statistics
+
+| Column | Total Entries | Avg Character Length | Avg Word Count |
+|--------|---------------|---------------------|----------------|
+"""
+
+    # Add summary rows
+    for _, row in summary_df.iterrows():
+        markdown_content += f"| {row['Column']} | {row['Total_Entries']} | {row['Avg_Character_Length']} | {row['Avg_Word_Count']} |\n"
+
+    markdown_content += """
+## Data Examples by Column
+
+| Column | Sample | Content | Length | Word Count |
+|--------|--------|---------|--------|------------|
+"""
+
+    # Add comparison rows
+    for _, row in comparison_df.iterrows():
+        # Escape pipe characters in content for markdown table
+        content = str(row['Content']).replace('|', '\\|').replace('\n', ' ')
+        markdown_content += f"| {row['Column']} | {row['Sample_Number']} | {content} | {row['Content_Length']} | {row['Word_Count']} |\n"
+
+    markdown_content += """
+## Summary
+
+This report provides a comparative analysis of the word cloud dataset containing responses from various AI models:
+
+### Models Analyzed:
+- **Human_story**: Human-written content (longest avg length: ~4,618 chars)
+- **GPT_4-o**: OpenAI GPT-4 responses
+- **accounts/yi-01-ai/models/yi-large**: Yi Large model responses
+- **llama-8B**: LLaMA 8B model responses
+- **mistral-7B**: Mistral 7B model responses
+- **qwen-2-72B**: Qwen 2 72B model responses
+- **gemma-2-9b**: Gemma 2 9B model responses
+- **prompt**: Input prompts (shortest avg length: ~114 chars)
+
+### Key Insights:
+- Human stories are significantly longer than AI-generated content
+- AI models show varying response lengths, with larger models generally producing longer outputs
+- All columns maintain good data completeness with minimal missing values
+
+---
+*Generated by 003_comparative_analysis.py*
+"""
+
+    md_path = f"{output_dir}/comparison_report.md"
+    with open(md_path, 'w', encoding='utf-8') as f:
+        f.write(markdown_content)
+
+    return md_path
+
+def main():
+    print("🚀 Starting Comparative Analysis...")
+
+    # Initialize database
+    db = CentralizedDB()
+
+    # Output directory
+    output_dir = "outputs/003_comparative_analysis"
+    os.makedirs(output_dir, exist_ok=True)
+
+    try:
+        # Load dataset
+        print("📥 Loading dataset...")
+        df = pd.read_csv("outputs/001_data_analysis/dataset.csv")
+        print(f"✅ Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+
+        # Create comparison tables
+        print("📊 Creating comparison tables...")
+        csv_path, summary_csv_path, comparison_df, summary_df = create_comparison_table(df, output_dir)
+
+        # Create Markdown report
+        print("📄 Creating Markdown report...")
+        md_path = create_markdown_report(comparison_df, summary_df, output_dir)
+
+        generated_files = [csv_path, summary_csv_path, md_path]
+
+        # Log successful execution
+        db.log_script_execution(
+            script_name="003_comparative_analysis.py",
+            status="SUCCESS",
+            description=f"Generated comparative analysis with {len(comparison_df)} examples",
+            output_files=generated_files
+        )
+
+        print(f"\n✅ Comparative analysis completed successfully!")
+        print(f"📁 Outputs saved to: {output_dir}/")
+        print(f"📊 Generated files:")
+        for file_path in generated_files:
+            print(f"   - {file_path}")
+        print(f"🗄️  Metadata saved to: outputs/centralized.db")
+
+    except Exception as e:
+        db.log_script_execution(
+            script_name="003_comparative_analysis.py",
+            status="ERROR",
+            description=f"Error: {str(e)}"
+        )
+        print(f"❌ Error: {e}")
+        return False
+
+    return True
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,9 @@
+Column,Total_Entries,Avg_Character_Length,Avg_Word_Count
+prompt,7321,113.93,18.66
+Human_story,7295,4617.78,734.05
+gemma-2-9b,7310,2293.44,345.6
+mistral-7B,7316,2529.69,398.42
+qwen-2-72B,7314,2403.75,388.96
+llama-8B,7306,2861.14,456.24
+accounts/yi-01-ai/models/yi-large,7319,3108.54,483.52
+GPT_4-o,7321,3890.33,570.01

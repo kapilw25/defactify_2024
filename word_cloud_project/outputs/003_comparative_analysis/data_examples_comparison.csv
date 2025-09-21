@@ -1,0 +1,69 @@
+Column,Sample_Number,Content,Content_Length,Word_Count
+prompt,Sample_1,This word has appeared in 48 New York Times articles in the past year.,70,14
+prompt,Sample_2,Mr. Trump once called Mr. Buchanan a “neo–Nazi.” But times have changed.,72,12
+Human_story,Sample_1,"U.S. AbortionLandscape
+U.S. AbortionLandscape
+Supported by
+Abortion Debate Shifts as Election Nears: ‘Now It’s About Pregnancy’
+Two years after Roe was struck down, the conversation has focused on the complications that can come with pregnancy and fertility, helping to drive more support for abortion rights.
+ByKate Zernike
+In the decades that Roe v. Wade was the law of the land, abortion rights groups tried to shore up support for it by declaring “Abortion Is Health Care.”
+Only now, two years...",500,80
+Human_story,Sample_2,"The New York Times
+Sports|Potential N.C.A.A. Bracket Busters. You’ve Been Warned.
+Site Search Navigation
+Site Navigation
+Site Mobile Navigation
+Sports
+Potential N.C.A.A. Bracket Busters. You’ve Been Warned.
+ByMARC TRACYandZACH SCHONBRUNMARCH 14, 2016
+
+The key to winning your N.C.A.A. tournament pool is identifying and picking some teams to knock off higher-seeded opponents. (Exceptlast year, when things pretty much unfolded predictably.) This college basketball season has been volatile at the...",500,68
+gemma-2-9b,Sample_1,"## Philly Captures Cosmic Alignment: Total Lunar Eclipse Illuminates Night Sky
+
+**Philadelphia, PA** - Residents of Philadelphia were treated to a celestial spectacle last night as a total lunar eclipse painted the moon a deep crimson hue.  Amateur astronomers and stargazers alike gathered across the city to witness the rare event, capturing stunning images of the moon passing through Earth's shadow.
+
+The eclipse, which began at 10:27 PM EST, saw the moon gradually entering Earth's umbra, the...",500,77
+gemma-2-9b,Sample_2,"## From Neo-Nazi to Potential Ally: The Shifting Sands of Trump's Political Landscape
+
+The political landscape is a fickle beast, prone to sudden shifts and unexpected alliances. Nowhere is this more evident than in the relationship between former President Donald Trump and far-right commentator Pat Buchanan, a man Trump once publicly labeled a ""neo-Nazi."" 
+
+In 2016, during the heated Republican primary race, Trump criticized Buchanan's views on immigration and race, branding him a ""neo-Nazi""...",500,74
+mistral-7B,Sample_1," Title: Do You Worry About the Same Things as These Warsaw Residents? A Look into the Concerns of the Polish Capital's Inhabitants
+
+In the heart of Europe, the vibrant city of Warsaw, Poland, is a bustling metropolis brimming with history, culture, and a diverse population. Yet, beneath the surface of its lively exterior, there are concerns that weigh heavily on the minds of its residents. As global issues continue to unfold, it is intriguing to examine the worries that resonate most strongly...",500,82
+mistral-7B,Sample_2," Title: ""Iowa Caucuses 2020: A Detailed Analysis of Results and Maps""
+
+In a historic turn of events, the 2020 Iowa Caucuses have come to a close, marking the first significant step in the race for the White House. The results, as expected, have shown a tight race among the Democratic candidates, with a few surprising twists and turns.
+
+According to the latest reports, Senator Bernie Sanders of Vermont has emerged as the clear frontrunner, securing a comfortable lead over his closest competito...",500,82
+qwen-2-72B,Sample_1,"In this week's film reviews, Times critics take a look at three new releases: ""Get Hard,"" ""While We're Young,"" and ""White God."" While the films vary widely in genre and tone, each has something to offer moviegoers seeking a fresh cinematic experience.
+
+First up is ""Get Hard,"" a comedy starring Will Ferrell and Kevin Hart. The film follows James King (Ferrell), a wealthy investment banker who is sentenced to 10 years in prison for fraud. In a panic, he turns to Darnell (Hart), a car wash owner...",500,87
+qwen-2-72B,Sample_2,"In a world where physical distancing has become a necessity, many of us have had to make sacrifices to keep ourselves and our loved ones safe. One of the most significant sacrifices has been the loss of physical contact with our grandparents, who may be more vulnerable to the effects of COVID-19.
+
+But just because we can't be with our grandparents in person doesn't mean we can't still feel connected to them. That's where a new online resource comes in: a virtual experience that allows you to ...",500,88
+llama-8B,Sample_1,"**HEADLINE:** ""Behind the Music: Industry Insiders Weigh in on [Musician's Name]'s Latest Masterpieces""
+
+**LOS ANGELES, CA** - Last night, a select group of music industry experts gathered for an exclusive roundtable discussion to dissect and analyze the latest releases from critically acclaimed musician, [Musician's Name]. The intimate gathering, hosted by prominent music critic, Rachel Cohen, brought together a diverse panel of industry insiders, including record label executives, producers...",500,68
+llama-8B,Sample_2,"**North Korea's Ballistic Missile Program Accelerates Faster Than Expected, Raising Global Concerns**
+
+Seoul, South Korea - In a move that has sent shockwaves around the world, North Korea's ballistic missile program has accelerated at a pace faster than expected, sparking widespread concerns about the country's nuclear capabilities.
+
+According to recent reports from intelligence agencies and satellite imagery, North Korea has conducted a series of successful tests of its intermediate-range b...",500,70
+accounts/yi-01-ai/models/yi-large,Sample_1,"**Jeff Ament of Pearl Jam Embarks on Ambitious Project to Bring High-End Skate Parks to Every City and Town in Montana**
+
+In an exciting development for skateboarding enthusiasts and the community at large, Jeff Ament, the bassist of the iconic rock band Pearl Jam, has announced a monumental project. Ament is spearheading an initiative to construct high-end skate parks in every city and town across Montana that is willing to host one. This ambitious project is not just about skateboarding, ac...",500,81
+accounts/yi-01-ai/models/yi-large,Sample_2,"In the wake of the devastating attack at Pulse, a gay nightclub in Orlando, where 49 people lost their lives, the community is finding solace and strength in unique ways. Among the many expressions of grief and solidarity, a poignant trend has emerged: gay men, along with others from the LGBTQ+ community and their allies, are flocking to tattoo parlors to honor the memories of those they have lost.
+
+This past week has been a blur of emotions for the city of Orlando and the nation at large. Th...",500,89
+GPT_4-o,Sample_1,"# The Power of Language: A Word that Dominated the New York Times in 2023
+
+In the dynamic landscape of language and its influence on media, certain words emerge as focal points in public discourse, shaping narratives and influencing conversations. This past year, one word has appeared in an impressive 48 articles in The New York Times, capturing the zeitgeist of 2023.
+
+## The Word: ""Resilience""
+
+In a year marked by global challenges, societal change, and an ongoing recovery from the COVID-19 ...",500,83
+GPT_4-o,Sample_2,"# Changing Perspectives: The Evolving Relationship Between Trump and Buchanan
+
+As the political landscape in the United States continues to shift, long-standing relationships and public perceptions are undergoing meaningful transformations. A focal point of this evolution is the complex and often contentious relationship between former President Donald Trump and Pat Buchanan, a figure with a controversial legacy in American politics. Once criticized by Trump as a “neo-Nazi,” Buchanan’s image ...",500,70
