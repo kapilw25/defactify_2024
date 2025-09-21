@@ -1,2 +1,12 @@
 venv_WC
 .claude/
+
+# Large dataset files
+word_cloud_project/outputs/001_data_analysis/dataset.csv
+# word_cloud_project/outputs/centralized.db
+
+# Python cache
+word_cloud_project/src/__pycache__/
+
+# NLTK data (can be re-downloaded)
+word_cloud_project/outputs/001_data_analysis/nltk_data/
