@@ -107,6 +107,57 @@ def generate_wordcloud_for_column(df, column_name, output_dir):
     print(f"✅ Word cloud saved: {output_path}")
     return output_path, top_words, len(word_counts)
 
+def generate_combined_llm_wordcloud(df, output_dir):
+    """Generate word cloud combining all LLM-generated content (excluding prompt and Human_story)"""
+    print("🎨 Generating combined LLM word cloud...")
+
+    # Define LLM columns (exclude prompt and Human_story)
+    llm_columns = [
+        'gemma-2-9b', 'mistral-7B', 'qwen-2-72B', 'llama-8B',
+        'accounts/yi-01-ai/models/yi-large', 'GPT_4-o'
+    ]
+
+    # Combine text from all LLM columns
+    all_llm_text = []
+    for column in llm_columns:
+        if column in df.columns:
+            column_text = df[column].dropna().astype(str).apply(preprocess_text)
+            all_llm_text.extend(column_text.tolist())
+
+    combined_text = ' '.join(all_llm_text)
+
+    if not combined_text.strip():
+        print("⚠️  No valid text found in LLM columns")
+        return None, None, 0
+
+    # Count words for statistics
+    word_counts = Counter(combined_text.split())
+    top_words = dict(word_counts.most_common(50))
+
+    # Generate word cloud with slightly different styling for combined view
+    wordcloud = WordCloud(
+        width=1200,
+        height=800,
+        background_color='white',
+        max_words=300,  # More words for combined view
+        relative_scaling=0.5,
+        colormap='plasma'  # Different colormap to distinguish from individual clouds
+    ).generate(combined_text)
+
+    # Create figure
+    plt.figure(figsize=(15, 10))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title('Word Cloud: Combined All LLM Responses', fontsize=20, fontweight='bold', pad=20)
+
+    # Save the word cloud
+    output_path = f"{output_dir}/wordcloud_combined_all_llms.png"
+    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close()
+
+    print(f"✅ Combined LLM word cloud saved: {output_path}")
+    return output_path, top_words, len(word_counts)
+
 def main():
     print("🚀 Starting Word Cloud Generation...")
 
@@ -144,6 +195,15 @@ def main():
                 # Save metadata to database
                 db.save_wordcloud_metadata(column, output_path, top_words, word_count)
                 generated_files.append(output_path)
+
+        # Generate combined LLM word cloud
+        print(f"\n🌟 Generating combined LLM word cloud...")
+        combined_output_path, combined_top_words, combined_word_count = generate_combined_llm_wordcloud(df, output_dir)
+
+        if combined_output_path:
+            # Save combined metadata to database
+            db.save_wordcloud_metadata("combined_all_llms", combined_output_path, combined_top_words, combined_word_count)
+            generated_files.append(combined_output_path)
 
         # Log successful execution
         db.log_script_execution(
