@@ -1,0 +1,8 @@
+\Title{A Comprehensive Dataset for Human vs. AI Generated Text Detection}
+\Author{Rajarshi Roy\sep Nasrin Imanpour\sep Ashhar Aziz\sep Shashwat Bajpai\sep Gurpreet Singh\sep Shwetangshu Biswas\sep Kapil Wanaskar\sep Parth Patwa\sep Subhankar Ghosh\sep Shreyas Dixit\sep Nilesh Ranjan Pal\sep Vipula Rawte\sep Ritvik Garimella\sep Amitava Das\sep Amit Sheth\sep Vasu Sharma\sep Aishwarya Naresh Reganti\sep Vinija Jain\sep Aman Chadha}
+\Keywords{\scan_stop: \mode_if_horizontal:TF {\mode_if_inner:F {\tex_unskip:D \hook_use:n {para/end}\@kernel@after@para@end \mode_if_horizontal:TF {\if_int_compare:w 11=\tex_lastnodetype:D \tex_hskip:D \c_zero_dim \fi: \tex_par:D \hook_use:n {para/after}\@kernel@after@para@after }{\msg_error:nnnn {hooks}{para-mode}{end}{horizontal}}}}\tex_par:D }
+\Subject{Layout by CEURART v0.5.3}
+\Copyright{\copyright\ 2025\ Copyright for this paper by its authors. Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).}
+\CopyrightURL{https://creativecommons.org/licenses/by/4.0}
+\Journaltitle{CEUR Workshop Proceedings}
+\Journalnumber{1613-0073}

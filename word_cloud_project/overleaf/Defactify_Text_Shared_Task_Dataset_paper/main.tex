@@ -1,0 +1,116 @@
+%% The first command in your LaTeX source must be the \documentclass command.
+%%
+%% Options:
+%% twocolumn : Two column layout.
+%% hf: enable header and footer.
+\documentclass[
+% twocolumn, % Uncomment for two-column layout
+% hf,
+]{ceurart}
+
+%%
+%% One can fix some overfulls
+\sloppy
+% \usepackage{xmpincl}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+% \usepackage{cite}
+% \usepackage[backend=biber,style=authoryear]{biblatex} 
+% \addbibresource{references.bib} 
+\usepackage{listings}
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}  % Ensures numerical order of citations
+%% auto break lines
+\lstset{breaklines=true}
+\usepackage{placeins} 
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% Rights management information.
+%% CC-BY is default license.
+\copyrightyear{2025}
+\copyrightclause{Copyright for this paper by its authors.
+Use permitted under Creative Commons License Attribution 4.0
+International (CC BY 4.0).}
+
+%%
+%% This command is for the conference information
+\conference{Defactify 4: Multimodal Fact-Checking and AI-Generated Image Detection, co-located with  AAAI 2025. 2025. Philadelphia, Pennsylvania, USA  }
+
+%%
+%% The "title" command
+\title{A Comprehensive Dataset for Human vs. AI Generated Text Detection}
+
+% \tnotemark[1]
+% \tnotetext[1]{This document is based on the CEUR-WS template and incorporates topics inspired by the Defactify workshop series.}
+
+\author[1]{Rajarshi Roy}[email=royrajarshi0123@gmail.com]
+\author[2]{Nasrin Imanpour}[email=imanpour@email.sc.edu]
+\author[3]{Ashhar Aziz}[email=ashhar21137@iiitd.ac.in]
+\author[4]{Shashwat Bajpai}[email=f20213041@hyderabad.bits-pilani.ac.in]
+\author[5]{Gurpreet Singh}[email=gurpreet.singh@email.com]
+\author[6]{Shwetangshu Biswas}[email=shwetangshu.biswas@email.com]
+\author[7]{Kapil Wanaskar}[email=kapilw25@gmail.com]
+\author[8]{Parth Patwa}[email=parthpatwa@g.ucla.edu]
+\author[9]{Subhankar Ghosh}[email=subhankar.ghosh@email.com]
+\author[10]{Shreyas Dixit}[email=shreyasrd31@gmail.com]
+\author[1]{Nilesh Ranjan Pal}[email=nileshpal530@gmail.com]
+\author[2]{Vipula Rawte}[email=vipula.rawte@email.com]
+\author[2]{Ritvik Garimella}[email=ritvik.garimella@email.com]
+\author[13]{Amitava Das}[email=amitava.das2@wipro.com]
+\author[2]{Amit Sheth}[email=amit@sc.edu]
+\author[11]{Vasu Sharma}[email=sharma.vasu55@gmail.com]
+\author[12]{Aishwarya Naresh Reganti}[email=aish.nr@gmail.com]
+\author[11]{Vinija Jain}[email=hi@vinija.ai]
+\author[12]{Aman Chadha}[email=hi@amanchadha.com]
+
+\address[1]{Kalyani Government Engineering College, India}
+\address[2]{AI Institute University of South Carolina, USA}
+\address[3]{IIIT Delhi, India}
+\address[4]{BITS Pilani Hyderabad Campus, India}
+\address[5]{IIIT Guwahati, India}
+\address[6]{National Institute of Technology Silchar, India}
+\address[7]{San Jose State University, USA}
+\address[8]{University of California Los Angeles, USA}
+\address[9]{Washington State University, USA}
+\address[10]{Vishwakarma Institute of Information Technology, India}
+\address[11]{Meta AI, USA}
+\address[12]{Amazon AI, USA}
+\address[13]{BITS Pilani, Goa}
+
+
+
+\input{abstract}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\begin{keywords}
+
+\end{keywords}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+
+\input{introduction}
+\input{related_work}
+\input{shared_task}
+\input{dataset}
+\input{baseline}
+\input{results}
+\input{conclusion}
+
+% \printbibliography
+% \bibliographystyle{plainnat} % or another style like abbrvnat, unsrtnat
+\bibliography{references} % Ensure you have a references.bib file
+\end{document}

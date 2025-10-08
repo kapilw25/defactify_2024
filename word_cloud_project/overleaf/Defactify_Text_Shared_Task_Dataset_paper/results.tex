@@ -1,0 +1,24 @@
+\section{Results}
+
+We define 2 tasks on the dataset: Human vs AI generated text classification (task A) and model attribution for AI-generated text (task B). The results of our baseline on both the tasks are provided in table \ref{tab:result}. These results establish foundational performance metrics for two key classification tasks based on our dataset, and serve as reference points for future research and method development.
+
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Task} & \textbf{Description} & \textbf{Accuracy} \\
+\hline
+Task A & Human vs. AI-generated text classification & 0.5835 \\
+\hline
+Task B & Model attribution for AI-generated text    & 0.0892 \\
+\hline
+\end{tabular}
+\caption{Results of our baseline. }
+\label{tab:result}
+\end{table}
+
+For Task A, the baseline uses an edit-distance rewriting approach inspired by Raidar~\cite{mao2024raidargenerativeaidetection} to distinguish human-written from AI-generated texts, achieving an accuracy of 58.35\%. For Task B, the same methodology is employed to identify the originating model of AI-generated texts, yielding an accuracy of 8.92\%.
+
+These baseline scores demonstrate the inherent difficulty of both tasks, especially as modern language models continue to improve. The dataset enables the development and benchmarking of more sophisticated detection and attribution techniques.

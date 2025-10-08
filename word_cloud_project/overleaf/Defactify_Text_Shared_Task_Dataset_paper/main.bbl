@@ -1,0 +1,180 @@
+\begin{thebibliography}{32}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Zellers et~al.(2020)Zellers, Holtzman, Rashkin, Bisk, Farhadi, Roesner, and Choi]{zellers2020defendingneuralfakenews}
+Rowan Zellers, Ari Holtzman, Hannah Rashkin, Yonatan Bisk, Ali Farhadi, Franziska Roesner, and Yejin Choi.
+\newblock Defending against neural fake news, 2020.
+\newblock URL \url{https://arxiv.org/abs/1905.12616}.
+
+\bibitem[Mitchell et~al.(2023)Mitchell, Lee, Khazatsky, Manning, and Finn]{mitchell2023detectgptzeroshotmachinegeneratedtext}
+Eric Mitchell, Yoonho Lee, Alexander Khazatsky, Christopher~D. Manning, and Chelsea Finn.
+\newblock Detectgpt: Zero-shot machine-generated text detection using probability curvature, 2023.
+\newblock URL \url{https://arxiv.org/abs/2301.11305}.
+
+\bibitem[Team et~al.(2024)Team, Riviere, Pathak, Sessa, Hardin, Bhupatiraju, et~al.]{gemmateam2024gemma2improvingopen}
+Gemma Team, Morgane Riviere, Shreya Pathak, Pier~Giuseppe Sessa, Cassidy Hardin, Surya Bhupatiraju, et~al.
+\newblock Gemma 2: Improving open language models at a practical size, 2024.
+\newblock URL \url{https://arxiv.org/abs/2408.00118}.
+
+\bibitem[Jiang et~al.(2023)Jiang, Sablayrolles, Mensch, Bamford, Chaplot, de~las Casas, Bressand, Lengyel, Lample, Saulnier, Lavaud, Lachaux, Stock, Scao, Lavril, Wang, Lacroix, and Sayed]{jiang2023mistral7b}
+Albert~Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, Lélio~Renard Lavaud, Marie-Anne Lachaux, Pierre Stock, Teven~Le Scao, Thibaut Lavril, Thomas Wang, Timothée Lacroix, and William~El Sayed.
+\newblock Mistral 7b, 2023.
+\newblock URL \url{https://arxiv.org/abs/2310.06825}.
+
+\bibitem[Bai et~al.(2023)Bai, Bai, Chu, Cui, Dang, Deng, et~al.]{bai2023qwentechnicalreport}
+Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, et~al.
+\newblock Qwen technical report, 2023.
+\newblock URL \url{https://arxiv.org/abs/2309.16609}.
+
+\bibitem[Touvron et~al.(2023)Touvron, Lavril, Izacard, Martinet, Lachaux, Lacroix, Rozière, Goyal, Hambro, Azhar, Rodriguez, Joulin, Grave, and Lample]{touvron2023llamaopenefficientfoundation}
+Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave, and Guillaume Lample.
+\newblock Llama: Open and efficient foundation language models, 2023.
+\newblock URL \url{https://arxiv.org/abs/2302.13971}.
+
+\bibitem[AI et~al.(2025)AI, :, Young, Chen, Li, Huang, Zhang, et~al.]{ai2025yiopenfoundationmodels}
+01. AI, :, Alex Young, Bei Chen, Chao Li, Chengen Huang, Ge~Zhang, et~al.
+\newblock Yi: Open foundation models by 01.ai, 2025.
+\newblock URL \url{https://arxiv.org/abs/2403.04652}.
+
+\bibitem[OpenAI et~al.(2024)OpenAI, Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman, Almeida, Altenschmidt, Altman, et~al.]{openai2024gpt4technicalreport}
+OpenAI, Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia~Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, et~al.
+\newblock Gpt-4 technical report, 2024.
+\newblock URL \url{https://arxiv.org/abs/2303.08774}.
+
+\bibitem[Dugan et~al.(2024)Dugan, Hwang, Trhlik, Ludan, Zhu, Xu, Ippolito, and Callison-Burch]{raid2024}
+Liam Dugan, Alyssa Hwang, Filip Trhlik, Josh~Magnus Ludan, Andrew Zhu, Hainiu Xu, Daphne Ippolito, and Chris Callison-Burch.
+\newblock Raid: A shared benchmark for robust evaluation of machine-generated text detectors, 2024.
+\newblock URL \url{https://arxiv.org/abs/2405.07940}.
+
+\bibitem[Wang et~al.(2024)Wang, Mansurov, Ivanov, Su, Shelmanov, Tsvigun, Mohammed~Afzal, Mahmoud, Puccetti, Arnold, Whitehouse, Aji, and Nakov]{m42024}
+Yuxia Wang, Jonibek Mansurov, Petar Ivanov, Jinyan Su, Artem Shelmanov, Akim Tsvigun, Osama Mohammed~Afzal, Tarek Mahmoud, Giovanni Puccetti, Thomas Arnold, Chenxi Whitehouse, Alham~Fikri Aji, and Preslav Nakov.
+\newblock M4: Multi-generator, multi-domain, and multi-lingual black-box machine-generated text detection.
+\newblock In \emph{Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics (EACL)}, 2024.
+\newblock URL \url{https://aclanthology.org/2024.eacl-long.83/}.
+
+\bibitem[Zhong et~al.(2022)Zhong, Jiang, Jiang, Demberg, and Strube]{turingbench2022}
+Xiao Zhong, Yixin Jiang, Weizhi Jiang, Vera Demberg, and Michael Strube.
+\newblock Turingbench: A benchmark environment for turing test in the age of neural text generation.
+\newblock In \emph{Findings of the Association for Computational Linguistics: EMNLP 2022}, 2022.
+\newblock URL \url{https://turingbench.ist.psu.edu/}.
+
+\bibitem[Guo et~al.(2023)Guo, Zhang, Wang, Jiang, Nie, Ding, Yue, and Wu]{hc32023}
+Biyang Guo, Xin Zhang, Ziyuan Wang, Minqi Jiang, Jinran Nie, Yuxuan Ding, Jianwei Yue, and Yupeng Wu.
+\newblock How close is chatgpt to human experts? comparison corpus, evaluation, and detection, 2023.
+\newblock URL \url{https://arxiv.org/abs/2301.07597}.
+
+\bibitem[Yamauchi et~al.(2024)Yamauchi, Sakuma, Yamaguchi, and Toyoda]{llmdetectaive2024}
+Mizuki Yamauchi, Yusei Sakuma, Naoya Yamaguchi, and Masaki Toyoda.
+\newblock Llm-detectaive: A tool for distinguishing ai-generated text, 2024.
+\newblock Dataset and tools for detecting AI-generated text with humanized/polished labels.
+
+\bibitem[Anonymous(2024{\natexlab{a}})]{faidset2024}
+Anonymous.
+\newblock Faid: Fine-grained ai-generated text detection using multi-task auxiliary and multi-level contrastive learning, 2024{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/html/2505.14271}.
+
+\bibitem[Guo et~al.(2024)Guo, Huang, Li, Wu, Wang, Lin, Liu, Wang, et~al.]{detectrl2024}
+Junchao Guo, Pengzhi Huang, Jiahao Li, Jiahao Wu, Zhenlin Wang, Peng Lin, Qing Liu, Liuyi Wang, et~al.
+\newblock Detectrl: Benchmarking llm-generated text detection in real-world scenarios, 2024.
+\newblock URL \url{https://arxiv.org/html/2410.23746v2}.
+\newblock Accepted at NeurIPS 2024.
+
+\bibitem[Hans et~al.(2024)Hans, Schwarzschild, Cherepanova, Kazemi, Saha, Goldblum, Geiping, and Goldstein]{hans2024spotting}
+Abhimanyu Hans, Avi Schwarzschild, Valeriia Cherepanova, Hamid Kazemi, Aniruddha Saha, Micah Goldblum, Jonas Geiping, and Tom Goldstein.
+\newblock Spotting {LLMs} with binoculars: Zero-shot detection of machine-generated text, 2024.
+
+\bibitem[Mao et~al.(2024)Mao, Vondrick, Wang, and Yang]{mao2024raidargenerativeaidetection}
+Chengzhi Mao, Carl Vondrick, Hao Wang, and Junfeng Yang.
+\newblock Raidar: generative ai detection via rewriting, 2024.
+\newblock URL \url{https://arxiv.org/abs/2401.12970}.
+
+\bibitem[Bao et~al.(2024)Bao, Zhao, Teng, Yang, and Zhang]{fastdetectgpt2024}
+Guangsheng Bao, Yanbin Zhao, Zhiyang Teng, Linyi Yang, and Yue Zhang.
+\newblock Fast-detectgpt: Efficient zero-shot detection of machine-generated text via conditional probability curvature, 2024.
+\newblock URL \url{https://arxiv.org/abs/2310.05130}.
+
+\bibitem[Han et~al.(2025)Han, Li, Ni, and Zulkernine]{han2025robustness}
+Xia Han, Qi~Li, Jianbing Ni, and Mohammad Zulkernine.
+\newblock Robustness assessment and enhancement of text watermarking for google's synthid.
+\newblock \emph{arXiv preprint arXiv:2508.20228}, 2025.
+
+\bibitem[Anonymous(2024{\natexlab{b}})]{synguard2024}
+Anonymous.
+\newblock Synguard: Enhancing watermark robustness via semantic-level guidance, 2024{\natexlab{b}}.
+\newblock Extends SynthID with semantic-level guidance for improved robustness.
+
+\bibitem[OpenAI(2020)]{roberta_openai}
+OpenAI.
+\newblock Roberta base openai detector.
+\newblock Dataloop/HuggingFace model card, 2020.
+\newblock URL \url{https://huggingface.co/openai-community/roberta-base-openai-detector}.
+
+\bibitem[Anonymous(2023)]{radar_openreview}
+Anonymous.
+\newblock Radar: Robust ai-text detection via adversarial learning.
+\newblock OpenReview, 2023.
+\newblock URL \url{https://openreview.net/forum?id=QGrkbaan79}.
+
+\bibitem[Wang(2017)]{liar2017}
+William~Yang Wang.
+\newblock ``liar, liar pants on fire'': A new benchmark dataset for fake news detection.
+\newblock In \emph{Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (ACL)}, pages 422--426, 2017.
+\newblock URL \url{https://aclanthology.org/P17-2067/}.
+
+\bibitem[Alhindi et~al.(2019)Alhindi, Petridis, and Muresan]{liarplus2019}
+Tariq Alhindi, Savvas Petridis, and Smaranda Muresan.
+\newblock Liar-plus: A benchmark dataset for fake news detection with justification.
+\newblock \emph{arXiv preprint arXiv:1902.04364}, 2019.
+\newblock URL \url{https://arxiv.org/abs/1902.04364}.
+
+\bibitem[Shu et~al.(2020)Shu, Mahudeswaran, Wang, Lee, and Liu]{fakenewsnet2020}
+Kai Shu, Deepak Mahudeswaran, Suhang Wang, Dongwon Lee, and Huan Liu.
+\newblock Fakenewsnet: A data repository with news content, social context, and spatiotemporal information for studying fake news on social media.
+\newblock \emph{Big Data}, 8\penalty0 (3):\penalty0 171--188, 2020.
+\newblock \doi{10.1089/big.2020.0062}.
+
+\bibitem[Thorne et~al.(2018)Thorne, Vlachos, Christodoulopoulos, and Mittal]{fever2018}
+James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal.
+\newblock Fever: a large-scale dataset for fact extraction and verification.
+\newblock In \emph{Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT)}, pages 809--819, 2018.
+\newblock URL \url{https://aclanthology.org/N18-1074/}.
+
+\bibitem[Augenstein et~al.(2019)Augenstein, Lioma, Wang, Chaves~Lima, Hansen, Hansen, and Simonsen]{multifc2019}
+Isabelle Augenstein, Christina Lioma, Dongsheng Wang, Lucas Chaves~Lima, Casper Hansen, Christian Hansen, and Jakob~Grue Simonsen.
+\newblock Multi-fc: A real-world multi-domain fact checking dataset.
+\newblock In \emph{Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, 2019.
+\newblock URL \url{https://aclanthology.org/D19-1475/}.
+
+\bibitem[Bansal and Singh(2024)]{mmcfnd_arxiv}
+Shubhi Bansal and Nishit~Sushil Singh.
+\newblock Mmcfnd: Multimodal multilingual caption-aware fake news detection for low-resource indic languages.
+\newblock \emph{arXiv}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2410.10407}.
+
+\bibitem[Nakamura et~al.(2020)Nakamura, Levy, and Wang]{fakeddit2020}
+Kai Nakamura, Sharon Levy, and William~Yang Wang.
+\newblock Fakeddit: A new multimodal benchmark dataset for fine-grained fake news detection, 2020.
+\newblock URL \url{https://arxiv.org/abs/1911.03854}.
+
+\bibitem[Zubiaga et~al.(2016)Zubiaga, Liakata, Procter, Wong Sak~Hoi, and Tolmie]{pheme2016}
+Arkaitz Zubiaga, Maria Liakata, Rob Procter, Geraldine Wong Sak~Hoi, and Peter Tolmie.
+\newblock Pheme dataset of rumours and non-rumours.
+\newblock Figshare, 2016.
+\newblock Twitter-based rumor detection and verification dataset.
+
+\bibitem[Cui and Lee(2020)]{coaid2020}
+Limeng Cui and Dongwon Lee.
+\newblock Coaid: Covid-19 healthcare misinformation dataset, 2020.
+\newblock URL \url{https://arxiv.org/abs/2006.00885}.
+
+\bibitem[Patwa et~al.(2021)Patwa, Sharma, PYKL, Guptha, Kumari, Akhtar, Ekbal, Das, and Chakraborty]{constraint2021}
+Parth Patwa, Shivam Sharma, Srinivas PYKL, Vasudeva Guptha, Gitanjali Kumari, Md~Shad Akhtar, Asif Ekbal, Amitava Das, and Tanmoy Chakraborty.
+\newblock Constraint at semeval-2021 task 7: Leveraging language models for detecting fake news on covid-19.
+\newblock In \emph{Proceedings of the 15th International Workshop on Semantic Evaluation (SemEval-2021)}, 2021.
+\newblock URL \url{https://aclanthology.org/2021.semeval-1.41/}.
+
+\end{thebibliography}
