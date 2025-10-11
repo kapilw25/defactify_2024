@@ -1,0 +1,44 @@
+
+Log file created: logs/lambda_monitor_20251011_012731.log
+(All terminal output will be captured in the log file)
+
+[1/2] Configuration:
+  Checking: gpu_1x_gh200
+  Target Regions: ANY region with availability
+  SSH Key: Macbook_Kapil
+  Note: Will use existing filesystem if available in target region
+
+[2/2] Starting monitor (polling every 15s)
+  Started: 2025-10-11 01:27:31
+
+------------------------------------------------------------
+
+[1] 01:27:31 - Checking availability... 
+   API Response for gpu_1x_gh200:
+   Price: $1.49/hour
+   Raw regions data: [{'name': 'us-east-3', 'description': 'Washington DC, USA'}]
+🎯 GPU_1X_GH200 AVAILABLE in us-east-3 ($1.49/hr - cheapest)!
+  Notification sent to ntfy.sh/lambda-gpu-alert-kapil
+  Checking for filesystem in us-east-3...
+  Found existing filesystem: DiskUsEast3
+  ⏳ Waiting 12s (rate limit)...
+  🚀 Launching gpu_1x_gh200 in us-east-3...
+  ⏳ Fetching instance details...
+  Notification sent to ntfy.sh/lambda-gpu-alert-kapil
+
+============================================================
+✅ SUCCESS! GPU_1X_GH200 Launched
+  Instance ID: f7873dbb4a7d4bd695e99a71fc5119e4
+  Region: us-east-3
+  IP Address: None
+  SSH: ssh ubuntu@None
+  Jupyter: None
+  Filesystem: DiskUsEast3
+  Cost: $1.49/hour
+============================================================
+
+============================================================
+Session ended: 2025-10-11 01:27:56
+Total attempts: 1
+Log file: logs/lambda_monitor_20251011_012731.log
+============================================================

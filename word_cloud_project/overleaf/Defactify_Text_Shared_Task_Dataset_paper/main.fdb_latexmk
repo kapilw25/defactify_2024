@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1759966085 "main.aux" "main.bbl" "main" 1759966093 0
-  "./references.bib" 1759966085 26237 f996fbe59b7daf1efe46506ff1ea520e ""
+["bibtex main"] 1759966085 "main.aux" "main.bbl" "main" 1759974328 0
+  "./references.bib" 1759974323 26237 f996fbe59b7daf1efe46506ff1ea520e ""
   "/usr/local/texlive/2023/texmf-dist/bibtex/bst/natbib/unsrtnat.bst" 1233624470 24550 a41a6405f4de768c43e871d9fbce2bc8 ""
-  "main.aux" 1759966092 16683 1c327369d5d912b0db970e0aa79a4ac0 "pdflatex"
+  "main.aux" 1759974328 16683 1c327369d5d912b0db970e0aa79a4ac0 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1759966089 "/Users/kapilwanaskar/Downloads/word_cloud/word_cloud_project/overleaf/Defactify_Text_Shared_Task_Dataset_paper/main.tex" "main.pdf" "main" 1759966093 2
+["pdflatex"] 1759974324 "/Users/kapilwanaskar/Downloads/word_cloud/word_cloud_project/overleaf/Defactify_Text_Shared_Task_Dataset_paper/main.tex" "main.pdf" "main" 1759974328 2
   "/Users/kapilwanaskar/Downloads/word_cloud/word_cloud_project/overleaf/Defactify_Text_Shared_Task_Dataset_paper/main.tex" 1759983632 3853 9fcf46f3f3bd8f19edb0d34d4f960877 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/libertinus-type1/lbts_75t36g.enc" 1667852677 3022 13dbae1db4ca7b6d6a3611a22a194cb8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/libertinus-type1/lbts_mfadfl.enc" 1667852677 3039 b94e5746763ffece6312a6e9abac298f ""
@@ -232,13 +232,13 @@
   "dataset.tex" 1759983632 6564 7276e38958617dd6a89c414a27fb66de ""
   "image/raidar_image.pdf" 1759983632 107953 eb04c9c3df5231abadd4b61b53cf01d1 ""
   "introduction.tex" 1759983632 2774 3fe4bce4ed77cefe9788814a7e686a90 ""
-  "main.abs" 1759966090 1303 fc23403508a18ff66dcb901df197328a "pdflatex"
-  "main.aux" 1759966092 16683 1c327369d5d912b0db970e0aa79a4ac0 "pdflatex"
+  "main.abs" 1759974325 1303 fc23403508a18ff66dcb901df197328a "pdflatex"
+  "main.aux" 1759974328 16683 1c327369d5d912b0db970e0aa79a4ac0 "pdflatex"
   "main.bbl" 1759966085 11841 b64cb9f6f9d19f4d5598bd0093503b50 "bibtex main"
-  "main.out" 1759966090 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "main.out" 1759974325 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   "main.tex" 1759983632 3853 9fcf46f3f3bd8f19edb0d34d4f960877 ""
-  "main.xmpdata" 1759966092 1104 92fccf6730e8ee4d2309b4a9b989079c "pdflatex"
-  "pdfa.xmpi" 1759966090 7389 48f697fbc24a5533d697b3fb84bd56ed "pdflatex"
+  "main.xmpdata" 1759974328 1104 92fccf6730e8ee4d2309b4a9b989079c "pdflatex"
+  "pdfa.xmpi" 1759974325 7389 b1fa0ef325cd3fc36d11fb1bb595f1d2 "pdflatex"
   "related_work.tex" 1759962591 12400 3dc4686f5eceaad5c2d0f3de5576fc72 ""
   "results.tex" 1759983632 1378 6020d40c6df6a0b9bfb960907adf1f19 ""
   "shared_task.tex" 1759983632 0 d41d8cd98f00b204e9800998ecf8427e ""
